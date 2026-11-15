@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head><meta charset="utf-8"/><meta name="referrer" content="strict-origin-when-cross-origin"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Falaise Météo</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#101820;color:#edf4f8;font:15px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:14px}h1{margin:5px 0;font-size:27px}h2{font-size:19px;margin:4px 0 14px}h3{font-size:16px}section{background:#1b2a36;border:1px solid #304452;border-radius:15px;padding:16px;margin:14px 0}label{display:block;font-size:13px;color:#c5d4df;margin:8px 0 4px}input,select,button{font:inherit;border:1px solid #526779;border-radius:9px;padding:10px;color:white;background:#293e4d;max-width:100%}input,select{width:100%}button{cursor:pointer}button:hover{background:#36566b}button.primary{background:#087b82;border-color:#1c9aa0}button.danger{background:#63363b}.row{display:flex;flex-wrap:wrap;gap:9px;align-items:end}.row>*{flex:1;min-width:130px}.row button{flex:0 1 auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.metric{padding:13px;background:#263b4a;border-radius:11px}.metric b{font-size:22px;display:block}.muted,small{color:#afc0cb}.status{padding:10px;border-radius:8px;background:#283d4a;margin:8px 0}.error{background:#63363b}.hidden{display:none!important}#map{height:340px;border-radius:12px;background:#334958;margin-top:12px}.day{min-width:108px;flex:1;border-radius:12px;text-align:center}.day.active{outline:2px solid #2ad2c8}.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}.chart{background:#243745;padding:10px;border-radius:12px;min-width:0}.chart canvas{width:100%;height:160px;display:block}.chart strong{display:block;margin-bottom:6px}.pill{display:inline-block;padding:5px 9px;background:#305361;border-radius:30px;margin:3px}.searchresult{display:block;width:100%;text-align:left;margin:4px 0}.suninfo{font-size:13px;color:#c5d4df}a{color:#72d6f4}hr{border:0;border-top:1px solid #3b5261;margin:16px 0}@media(max-width:480px){.charts{grid-template-columns:1fr}#map{height:300px}}.crag-fields{display:grid;grid-template-columns:minmax(180px,2fr) repeat(3,minmax(115px,1fr)) repeat(2,minmax(105px,1fr));gap:9px;align-items:end}.crag-fields>div{min-width:0}.crag-fields label{white-space:nowrap}.crag-fields input,.crag-fields select{min-width:0}.sun-note{grid-column:1/-1}.chart-readout{color:#ffcc71;font-size:12px;min-height:19px;margin-bottom:5px}.activity-link{display:inline-block;margin-top:8px;padding:8px 12px;border:1px solid #526779;border-radius:9px}.activity-note{font-size:13px;color:#afc0cb;margin-top:6px}@media(max-width:850px){.crag-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.crag-fields .crag-name{grid-column:1/-1}}@media(max-width:520px){.crag-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.crag-fields .crag-name{grid-column:1/-1}.crag-fields label{font-size:11px;white-space:normal}.crag-fields input,.crag-fields select{padding:8px}} 
+#days{flex-wrap:nowrap;overflow-x:auto;padding:4px 2px 9px;scroll-snap-type:x proximity}#days .day{flex:0 0 124px;scroll-snap-align:start}.model-picker select{background:#203e4e;border-color:#d2a44c}.model-note{color:#eac87f!important}.sun-strip{background:#243745;border-radius:12px;padding:14px;margin:14px 0}.sun-header{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between}.sun-label{font-weight:650;color:#ffdd82}.sun-bar{position:relative;height:31px;background:#384b5a;border-radius:7px;overflow:hidden;margin-top:10px;touch-action:pan-y}.sun-unit{position:absolute;top:2px;height:27px;background:linear-gradient(180deg,#ffe27d,#edb820);border-right:1px solid #f9d360}.sun-tick{position:absolute;top:0;height:100%;border-left:1px solid rgba(255,255,255,.16);pointer-events:none}.sun-times{display:flex;justify-content:space-between;color:#b5c7d1;font-size:12px;margin-top:5px}.sun-explain{color:#c9d6df;font-size:13px;margin-top:8px}.sun-footer{display:flex;flex-wrap:wrap;gap:12px;margin-top:7px}.sun-hour{color:#ffdb77;font-variant-numeric:tabular-nums}.sun-cloud{color:#bed0d9}.sun-bar .sun-cursor{position:absolute;height:100%;top:0;width:2px;background:#fff;pointer-events:none;z-index:2}.map-stage{height:100%;width:100%;position:relative;overflow:hidden;background:#293f4e;touch-action:none;cursor:grab;user-select:none}.map-tile{position:absolute;width:256px;height:256px;max-width:none;pointer-events:none}.map-marker{position:absolute;transform:translate(-50%,-100%);font-size:32px;text-shadow:0 2px 3px #121820;pointer-events:none;z-index:3}.map-tools{position:absolute;top:9px;right:9px;z-index:10;display:flex;flex-direction:column;gap:5px}.map-tools button{padding:6px 11px;font-weight:bold;background:#132d3cdd}.map-attribution{position:absolute;bottom:1px;right:2px;z-index:5;background:#10212baa;padding:2px 4px;font-size:11px}.map-attribution a{color:#bdeaff}.sun-help-badge{color:#facb61}.model-wrap{margin-top:9px}.model-wrap label{margin-bottom:6px}.weather-subtitle{font-size:12px;color:#abc5d2;margin-bottom:8px}#map{overflow:hidden}#mapMsg{margin-top:8px}#weatherModel{font-weight:650}.preview-note{font-size:12px;color:#f7d786}.map-guide{margin:8px 0;color:#c8dae3}.map-buttons{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.map-buttons a{font-size:13px}.crag-fields{grid-template-columns:minmax(170px,2fr) repeat(3,minmax(110px,1fr)) minmax(155px,1.3fr) repeat(2,minmax(104px,1fr))}.crag-fields .sun-note{grid-column:1/-1}.sun-value{color:#ffe18c}.day{line-height:1.55}.day small{font-size:12px}@media(max-width:900px){.crag-fields{grid-template-columns:repeat(3,minmax(0,1fr))}.crag-fields .crag-name{grid-column:1/-1}}@media(max-width:520px){.crag-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.crag-fields .crag-name{grid-column:1/-1}.sun-strip{padding:10px}.metric{padding:10px}.metric b{font-size:19px}}
+/* Réglette horaire colorée avec état accessible */
+.best-window{background:linear-gradient(135deg,#203a47,#233341);border:1px solid #4b6976;border-radius:15px;padding:20px;margin-top:13px}
+.best-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.best-eyebrow{font-size:13px;color:#b9d2da;font-weight:650;text-transform:uppercase;letter-spacing:.06em}
+.best-big-time{font-size:clamp(30px,5vw,49px);font-weight:800;line-height:1.15;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#fff;margin:8px 0 3px}
+.best-description{font-size:14px;color:#d1e0e8;margin:6px 0 16px}
+.best-score{font-size:14px;border:1px solid #8cc3bf;border-radius:10px;padding:8px 11px;background:#1e4d50;color:#bffaf0;font-weight:750;font-variant-numeric:tabular-nums}
+.best-hour-track{position:relative;padding:5px 0;margin:12px 0 0}
+.best-hour-cells{display:flex;gap:2px;height:29px;position:relative}
+.best-hour{appearance:none;min-width:0;flex:1;padding:0;border:0;border-radius:4px;cursor:crosshair;outline-offset:2px;transition:filter .12s ease}
+.best-hour:hover,.best-hour:focus-visible{filter:brightness(1.25);outline:2px solid white}
+.best-hour.selected{box-shadow:inset 0 0 0 2px #fff}
+.best-hour.night{background:#656e72}.best-hour.bad{background:#de4c65}.best-hour.ok{background:#ebba5c}.best-hour.good{background:#8bdcaa}.best-hour.great{background:#3aab86}
+.best-outline{position:absolute;top:-5px;bottom:-5px;border:3px solid #f0a8ff;box-shadow:0 0 0 1px #5b2869;border-radius:7px;pointer-events:none;z-index:2}
+.best-axis{display:flex;justify-content:space-between;font-size:12px;color:#bdced9;margin:5px 0 2px;font-variant-numeric:tabular-nums}
+.best-legend{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0 0;font-size:12px;color:#c5d3dd}
+.best-legend span{display:inline-flex;align-items:center;gap:5px}.best-swatch{display:inline-block;width:11px;height:11px;border-radius:3px}
+.best-swatch.great{background:#3aab86}.best-swatch.good{background:#8bdcaa}.best-swatch.ok{background:#ebba5c}.best-swatch.bad{background:#de4c65}.best-swatch.night{background:#656e72}.best-swatch.best{width:13px;height:12px;border:2px solid #f0a8ff;background:transparent}
+.best-detail{font-size:13px;color:#bdd4de;margin-top:10px;min-height:22px}
+.best-clicked{color:#f3d4ff;font-weight:650}
+@media(max-width:520px){.best-window{padding:13px}.best-hour-cells{height:29px}.best-legend{gap:9px}.best-big-time{font-size:34px}.best-hour{border-radius:2px}}
+
+/* V11 rose des vents cliquable */
+.compass-trigger{width:100%;height:44px;text-align:left;border-color:#59a0ac;background:#183b48;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compass-trigger:focus-visible{outline:2px solid #eec26e}
+.compass-overlay{position:fixed;inset:0;background:#03131bc9;display:flex;justify-content:center;align-items:center;z-index:800;padding:12px;backdrop-filter:blur(4px)}
+.compass-panel{width:min(430px,100%);max-height:96dvh;overflow:auto;background:#1c303d;border:1px solid #68818b;border-radius:19px;padding:14px 17px 13px;box-shadow:0 16px 60px #020c13aa}
+.compass-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.compass-panel-head strong{font-size:17px}.compass-panel-head p{font-size:12px;color:#baccd7;margin:5px 0 0}
+#closeCompass{border-radius:50%;width:34px;height:34px;padding:0;flex-shrink:0}
+.compass-wheel{position:relative;width:min(370px,100%);aspect-ratio:1;margin:0 auto}
+#compassArtwork{width:100%;height:100%;position:absolute;inset:0}
+.compass-dir{position:absolute;transform:translate(-50%,-50%);min-width:34px;min-height:34px;border-radius:18px;border:1px solid #627d8d;background:#294352e5;color:#e7f2f6;font-size:12px;font-weight:750;padding:4px;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.compass-dir.cardinal{font-size:15px;min-width:36px;min-height:36px}
+.compass-dir.active{background:#f2c75b;color:#1c2731;border:2px solid #fff;box-shadow:0 0 10px #f7c848b0}
+.compass-dir:hover{background:#447283}.compass-dir.active:hover{background:#ffda76}
+.compass-choice{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:132px;display:flex;flex-direction:column;align-items:center;text-align:center;pointer-events:none;background:#182b38e8;padding:12px 4px;border-radius:100px;border:1px solid #6a8290;font-size:12px;gap:3px}
+.compass-choice b{font-size:22px;color:#ffce6c}.compass-choice small{font-size:10px;color:#c9d7dc}
+.compass-foot{margin:0;text-align:center;color:#b9cbd4;font-size:12px}
+.map-settings{margin:8px 0 4px}.map-settings>div{min-width:200px}.map-settings>button{height:42px}
+#map{height:390px;min-height:300px;position:relative;overflow:hidden;border:1px solid #537084;background:#233b4b}
+#map canvas{outline:none}.map-hint{margin-top:6px;font-size:12px}
+.map-loading{height:100%;display:grid;place-items:center;justify-items:center;color:#d3e4e9;gap:8px;text-align:center;padding:28px}
+@media(max-width:500px){.compass-panel{padding:11px}.compass-dir{min-width:30px;min-height:30px;font-size:10px;padding:2px}.compass-dir.cardinal{min-width:32px;min-height:32px;font-size:13px}#map{height:340px}.compass-choice{width:105px}.compass-choice b{font-size:18px}}
+
+/* V12 : cartographie mono-source, explication claire en mode fichier local */
+.topo-tag{background:#213e48;border:1px solid #607d79;color:#e5f6f3;border-radius:10px;padding:11px 13px;font-size:14px}
+.map-local-warning{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:13px;background:linear-gradient(145deg,#233b49,#314d58);color:#e8f1f6;padding:20px;font-size:14px}
+.map-local-warning a{background:#d3a74b;color:#16232c;padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:700}
+.map-local-warning strong{font-size:18px}
+/* V13 mobile ergonomics and transparent scoring */
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+button,select,input{min-height:44px}
+.mobile-nav{display:none}
+.crag-picker{margin-bottom:10px}
+.crag-picker select{font-weight:650}
+.settings-disclosure{border-top:1px solid #3b5360;padding-top:8px}
+.settings-disclosure>summary{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;cursor:pointer;padding:11px 14px;border:1px solid #3c606f;border-radius:10px;background:#223c4a;color:#f0f7fb;font-weight:750;list-style:none}
+.settings-disclosure>summary::-webkit-details-marker{display:none}
+.settings-disclosure>summary:after{content:'⌄';font-size:23px;line-height:1}
+.settings-disclosure[open]>summary:after{transform:rotate(180deg)}
+.settings-disclosure>summary small{color:#b3cbd5;font-weight:400}
+.settings-content{padding-top:11px}
+.crag-actions button{flex:0 1 auto}
+.score-why{margin-top:16px;border:1px solid #68929d;background:#182f3a;border-radius:11px;overflow:hidden}
+.score-why>summary{display:flex;align-items:center;gap:7px;justify-content:space-between;cursor:pointer;background:#244c58;padding:13px 14px;color:#e5faff;font-weight:750;list-style:none;min-height:48px}
+.score-why>summary::-webkit-details-marker{display:none}
+.score-why>summary:after{content:'⌄';font-size:21px;line-height:1}
+.score-why[open]>summary:after{transform:rotate(180deg)}
+.score-why>summary span{font-size:12px;color:#c3dce1;font-weight:450;margin-left:auto}
+.score-why-body{padding:16px 14px}
+.score-intro{margin:0 0 13px;color:#e3edf3;line-height:1.55}
+.score-method-caption{font-size:13px;font-weight:700;color:#bcd5e2;margin:14px 0 9px}
+.score-factor-list{display:grid;gap:5px}
+.score-factor{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #345361;padding:9px 0}
+.score-factor b{display:block;font-size:14px}
+.score-factor small{display:block;font-size:12px;color:#b0c7d1;line-height:1.45;margin-top:2px}
+.score-delta{font-size:17px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.score-delta.negative{color:#ff9b96}.score-delta.positive{color:#9ce0b4}.score-delta.neutral{color:#b8cad3}
+.score-result{background:#315060;padding:12px;border-radius:9px;margin:13px 0 7px}
+.score-result strong{font-size:18px;color:#fff}
+.score-calculation-note,.score-caveat{font-size:12px;color:#b9d1dc;line-height:1.5}
+.score-formula{margin:14px 0;border:1px solid #506c78;border-radius:9px;padding:8px 11px}
+.score-formula>summary{cursor:pointer;font-weight:650;padding:6px 0}
+.score-formula li{margin:7px 0;line-height:1.45;color:#d4e0e7}
+.score-formula ul{padding-left:21px}
+.score-table-wrap{overflow-x:auto}
+.score-table{width:100%;min-width:330px;border-collapse:collapse;font-size:12px}
+.score-table th,.score-table td{padding:9px 6px;text-align:left;border-bottom:1px solid #3d5764;white-space:nowrap}
+.score-table th{color:#bbced8}
+.score-caveat{margin:14px 0 0}
+#hourlyCharts{scroll-margin-top:90px}
+@media(max-width:700px){
+ body{font-size:14px}
+ main{padding:8px 9px 28px}
+ h1{font-size:22px;margin:9px 4px 2px}
+ h1 small{font-size:13px;color:#abc1ca}
+ main>div.muted{font-size:12px;margin:0 4px 5px}
+ section{margin:9px 0;padding:11px 10px;border-radius:12px}
+ section h2{font-size:16px;margin:2px 0 9px}
+ .mobile-nav{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;background:#101820ed;backdrop-filter:blur(9px);padding:7px 0 5px}
+ .mobile-nav a,.mobile-nav button{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;background:#263f4b;border:1px solid #4c6673;border-radius:9px;padding:7px 4px;font-size:12px;font-weight:700;color:#e6f0f4;text-decoration:none;line-height:1.2}
+ .mobile-nav button{max-width:none}
+ .status{font-size:12px;padding:7px 10px;margin:7px 0}
+ .crag-picker label{margin-top:0}
+ .settings-disclosure>summary{font-size:13px;padding:11px 9px}
+ .settings-disclosure>summary small{font-size:11px}
+ .crag-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px}
+ .crag-fields .crag-name{grid-column:1/-1}
+ .crag-fields .model-picker{grid-column:1/-1}
+ .crag-fields label{white-space:normal;font-size:11px;line-height:1.25;margin-top:7px}
+ .crag-fields input,.crag-fields select{font-size:13px}
+ .crag-fields .sun-note{line-height:1.4}
+ .crag-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+ .crag-actions button{width:100%;font-size:12px;min-width:0;padding:8px}
+ .row>*{min-width:0}
+ #conditions{display:flex;flex-direction:column;min-width:0}
+ #conditions h2{order:0}
+ #days{order:1;margin:0;padding:4px 2px 10px;gap:7px}
+ #days .day{flex:0 0 97px;min-width:97px;font-size:12px;padding:9px 5px;line-height:1.5}
+ #days .day b{font-size:18px}
+ #best{order:2;margin:8px 0 4px}
+ #summary{order:3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px!important}
+ #sunSection{order:4}
+ #conditions h3{order:5;margin-top:12px}
+ #charts{order:6}
+ #hours{order:7}
+ #conditions>p{order:8}
+ .metric{padding:9px 10px}
+ .metric small{font-size:11px;line-height:1.25}
+ .metric b{font-size:19px;margin-top:3px}
+ .best-window{padding:12px 10px}
+ .best-top{align-items:flex-start;flex-direction:column;gap:5px}
+ .best-big-time{font-size:clamp(29px,8.7vw,39px);margin:5px 0}
+ .best-score{padding:6px 8px;font-size:12px}
+ .best-eyebrow{font-size:11px}
+ .best-description{font-size:12px;margin:9px 0}
+ .best-hour-cells{height:35px}
+ .best-axis{font-size:10px}
+ .best-legend{gap:8px;font-size:10px}
+ .best-detail{font-size:12px}
+ .score-why>summary{font-size:13px;padding:11px 9px;gap:5px}
+ .score-why>summary span{font-size:10px}
+ .score-why-body{padding:11px 10px}
+ .score-factor b{font-size:12px}
+ .score-factor small{font-size:11px}
+ .score-delta{font-size:14px}
+ .charts{grid-template-columns:1fr;gap:8px}
+ .chart{padding:8px}
+ .chart canvas{height:158px}
+ .sun-strip{margin:10px 0;padding:10px}
+ #map{height:290px}
+ .compass-panel{max-height:92dvh}
+ .activity-link{font-size:12px}
+ #hours table{font-size:12px}
+}
+@media(max-width:340px){#summary{grid-template-columns:repeat(2,minmax(0,1fr))}.mobile-nav a,.mobile-nav button{font-size:11px}.best-big-time{font-size:28px}}
+
+/* V14: barre horaire stable, jamais de labels sur les cases */
+.best-window{overflow:hidden}
+.best-hour-track{margin:19px 0 14px;padding:0;min-width:0}
+.best-hour-cells{height:36px;display:flex;gap:2px;position:relative;align-items:stretch}
+.best-hour{min-height:0!important;height:36px!important;display:block;min-width:0!important;flex:1 1 0;padding:0!important;border-radius:4px!important;touch-action:pan-y}
+.best-outline{top:-5px;bottom:-5px;box-shadow:0 0 0 1px #533266;outline-offset:-2px}
+.best-axis-clean{position:relative;height:31px;margin-top:14px;border-top:1px solid #506675;font-variant-numeric:tabular-nums;overflow:visible}
+.best-axis-clean span{position:absolute;top:8px;font-size:11px;line-height:14px;color:#c4d2db;white-space:nowrap;pointer-events:none}
+.best-legend{margin-top:15px;line-height:1.6}
+.skin-title{font-weight:750;font-size:13px;color:#d6e4ed;margin-top:13px}
+.skin-note{font-size:12px;color:#b6cad3;margin-top:6px;line-height:1.5}
+.skin-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.skin-option{min-width:0;background:#253e4d;border:1px solid #557486;border-radius:10px;padding:9px 7px;min-height:66px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;text-align:left}
+.skin-option:hover{background:#34566a}
+.skin-option.active{background:#22545b;border:2px solid #8ae5cc;padding:8px 6px;box-shadow:inset 0 0 0 1px #376f71}
+.skin-option .skin-opt-title{font-size:12px;font-weight:650;line-height:1.2}
+.skin-option .skin-opt-score{font-size:18px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;color:#f1fbff}
+.best-detail{margin:13px 0 4px;min-height:25px;line-height:1.5}
+.best-description{overflow-wrap:anywhere}
+.score-why-body .score-result{line-height:1.45}
+.score-reference{margin:13px 0;padding:10px 12px;background:#223e4a;border-radius:9px;font-size:12px;line-height:1.55}
+.score-reference a{overflow-wrap:anywhere}
+@media(max-width:520px){
+ .best-window{padding:14px 11px}
+ .best-top{gap:8px}
+ .best-big-time{font-size:clamp(29px,8.4vw,39px);letter-spacing:-.035em}
+ .best-description{margin:10px 0 15px;line-height:1.45}
+ .best-hour-track{margin-top:18px}
+ .best-hour,.best-hour-cells{height:36px!important}
+ .best-axis-clean{height:29px;margin-top:13px}
+ .best-axis-clean span{font-size:10px}
+ .skin-options{gap:5px}
+ .skin-option{padding:7px 5px;min-height:63px}
+ .skin-option.active{padding:6px 4px}
+ .skin-option .skin-opt-title{font-size:11px}
+ .skin-option .skin-opt-score{font-size:16px}
+}
+/* V15 — Légendes lisibles sans empiéter sur les graphiques */
+.chart .plot-legend{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;margin:-1px 0 7px;font-size:11px;color:#cadbe5;min-height:16px}
+.plot-legend .legend-item{display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+.plot-legend .legend-dot{display:inline-block;width:18px;height:0;border-top:3px solid var(--line-color);border-radius:2px}
+.plot-legend .legend-dot.dashed{border-top-style:dashed}
+.plot-legend .legend-dot.bar{height:11px;width:10px;border-top:0;background:var(--line-color);border-radius:2px}
+.plot-legend .legend-dot.score{height:6px;width:27px;border:0;background:linear-gradient(90deg,#de4c65 0 24%,#ebba5c 24% 47%,#8bdcaa 47% 70%,#3aab86 70%);border-radius:4px}
+.chart .chart-readout{line-height:1.45;min-height:20px;color:#f3d68b}
+.chart .chart-readout .reading{font-weight:650}
+.chart .chart-readout .reading+.reading{margin-left:10px}
+@media(max-width:520px){.chart .plot-legend{font-size:10px;gap:6px 10px}.chart .chart-readout{font-size:11px}}
+
+/* Séparation visuelle claire : choix de falaise / paramètres */
+section.crag-section{background:linear-gradient(135deg,#193944,#1c3543);border:1px solid #448d9c;box-shadow:0 3px 16px #06131c55}
+section.crag-section h2{margin-bottom:11px;color:#e9fafd}
+.crag-picker-main{display:grid;grid-template-columns:minmax(230px,1fr) auto;align-items:end;gap:14px}
+.crag-picker{margin:0;min-width:0}
+.crag-picker label{font-size:12px;text-transform:uppercase;font-weight:750;letter-spacing:.065em;color:#b6e2e9}
+.crag-picker select{background:#284958;border:1px solid #74c0ca;font-size:16px;font-weight:750;min-height:49px;color:#f6fcff}
+.crag-picker select:focus-visible{outline:2px solid #ffc95b;outline-offset:2px}
+.crag-picker-main .crag-actions{align-items:end;gap:7px;margin-bottom:1px}
+.crag-picker-main .crag-actions button{min-height:49px;white-space:nowrap}
+section.settings-panel{background:#182630;border:1px solid #344957;margin-top:10px}
+.settings-panel .settings-disclosure{border:0;padding:0}
+.settings-panel .settings-disclosure>summary{background:#213642;border:1px solid #57717f}
+.settings-panel .settings-content{padding:13px 1px 1px}
+.best-metrics{margin-top:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.best-metrics .metric{min-width:0;padding:11px 10px;background:#263c4a;border:1px solid #395767;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.best-metrics .metric b{font-size:23px;letter-spacing:-.035em;line-height:1.2;font-variant-numeric:tabular-nums}
+.best-metrics .metric-label{color:#e0eef4;font-size:12px;font-weight:720;line-height:1.35}
+.best-metrics .metric-caption{font-size:11px;color:#aec5d2;line-height:1.45}
+@media(max-width:790px){.crag-picker-main{grid-template-columns:1fr}.crag-picker-main .crag-actions{display:grid;grid-template-columns:1fr 1fr}.crag-picker-main .crag-actions button{min-height:43px}.best-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){#summary.best-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px!important;gap:7px}.best-metrics .metric{padding:10px 9px}.best-metrics .metric b{font-size:21px}.best-metrics .metric-caption{font-size:10px}.crag-picker select{min-height:46px}}
+@media(max-width:360px){.best-metrics .metric-label{font-size:11px}.best-metrics .metric b{font-size:19px}.best-metrics .metric-caption{font-size:10px}}
+</style></head><body><main><h1>Falaise Météo</h1><div class="status" id="status" role="status" aria-live="polite">Initialisation…</div>
+<nav class="mobile-nav" aria-label="Accès rapide"><a href="#conditions">☀️ Conditions</a><a href="#hourlyCharts">📈 Graphiques</a><button id="openSettingsMobile" type="button">⚙️ Réglages</button></nav>
+<section class="crag-section" id="cragSection">
+  <h2>📍 Mes falaises</h2>
+  <div class="crag-picker-main">
+    <div class="crag-picker"><label for="crags">Choisir une falaise enregistrée</label><select id="crags"></select></div>
+    <div class="row crag-actions"><button id="newCrag">+ Nouvelle falaise</button><button class="danger" id="removeCrag">Supprimer</button></div>
+  </div>
+</section>
+<section class="settings-panel" id="cragParamSection">
+<details class="settings-disclosure" id="cragSettings" open>
+<summary><span>⚙️ Paramètres de la falaise</span><small>Orientation, modèle météo, recherche et carte</small></summary>
+<div class="settings-content">
+<div class="row"><div><label>Recherche OpenStreetMap (nom ou commune)</label><input id="search" placeholder="Ex. Monistrol-d'Allier, Céüse"/></div><button id="searchBtn">Rechercher</button></div><div id="results"></div><button id="mapToggle">🗺️ Afficher / masquer la carte</button><div class="hidden" id="mapArea">
+<p class="muted">Carte relief : navigue et touche l’emplacement de la falaise pour déplacer le repère GPS.</p>
+<div class="row map-settings"><div class="topo-tag">🗺️ <b>OpenTopoMap-R</b> · relief et falaises · gratuit, sans clé API</div></div>
+    <div id="map"></div><div class="muted" id="mapMsg" role="status" aria-live="polite"></div>
+<div class="map-buttons"><a href="#" id="mapTopoLink" rel="noopener noreferrer" target="_blank">Voir la carte topo externe</a><a href="#" id="mapOsmLink" rel="noopener noreferrer" target="_blank">OpenStreetMap</a><button id="mapCenter" type="button">Centrer sur la falaise</button></div>
+<div class="muted map-hint">Fond topographique OpenTopoMap-R fourni gratuitement par openmaps.fr (usage non commercial modéré). Les falaises absentes d’OpenStreetMap ne sont pas dessinées. L’affichage intégré requiert un site HTTPS (ex. GitHub Pages) pour identifier correctement l’application.</div>
+</div><div class="crag-fields"><div class="crag-name"><label>Nom de la falaise</label><input id="name"/></div><div><label>Orientation</label><button type="button" id="compassButton" class="compass-trigger" aria-haspopup="dialog" aria-controls="compassDialog">🧭 Choisir l’orientation</button><select id="aspect" class="hidden" aria-hidden="true" tabindex="-1"><option value="0">Nord</option><option value="22.5">Nord-Nord-Est</option><option value="45">Nord-Est</option><option value="67.5">Est-Nord-Est</option><option value="90">Est</option><option value="112.5">Est-Sud-Est</option><option value="135">Sud-Est</option><option value="157.5">Sud-Sud-Est</option><option value="180">Sud</option><option value="202.5">Sud-Sud-Ouest</option><option value="225">Sud-Ouest</option><option value="247.5">Ouest-Sud-Ouest</option><option value="270">Ouest</option><option value="292.5">Ouest-Nord-Ouest</option><option value="315">Nord-Ouest</option><option value="337.5">Nord-Nord-Ouest</option></select></div><div><label>Profil</label><select id="profile"><option value="vertical">Vertical</option><option value="slab">Dalle</option><option value="overhang">Dévers</option><option value="sheltered_overhang">Dévers abrité</option></select></div><div><label>Rocher</label><select id="rock"><option value="limestone">Calcaire</option><option value="granite">Granite</option><option value="sandstone">Grès</option><option value="basalt">Basalte</option><option value="phonolite">Phonolithe</option><option value="other">Autre</option></select></div><div class="model-picker"><label for="weatherModel">Modèle météo</label><select id="weatherModel"><option value="best_match">Best Match ★ (conseillé)</option><option value="meteofrance_seamless">Météo-France (AROME/ARPEGE)</option><option value="ecmwf_ifs">ECMWF IFS</option><option value="icon_seamless">ICON</option><option value="meteofrance_arome_france_hd">AROME France HD (48 h)</option></select></div><div><label>Début soleil (facultatif)</label><input id="sunStart" type="time"/></div><div><label>Fin soleil (facultatif)</label><input id="sunEnd" type="time"/></div><div><label>Latitude</label><input id="lat" step="0.000001" type="number"/></div><div><label>Longitude</label><input id="lon" step="0.000001" type="number"/></div><small class="sun-note">Sans horaires renseignés : exposition calculée par la position du soleil et l’orientation de la falaise. Si les horaires réels sont saisis, ils sont prioritaires (relief/ombres connues).</small></div><div class="sun-explain model-note" id="modelHelp">Best Match : AROME HD près de l’échéance et relais régional/global jusqu’à 7 jours.</div><div class="row"><button class="primary" id="saveCrag">Enregistrer la falaise</button><button id="refresh">↻ Actualiser la météo</button></div>
+</div></details></section><section id="conditions"><h2>☀️ Conditions (jusqu’à 7 jours)</h2><div class="row" id="days"></div><div class="best-window" id="best">En attente de prévisions.</div><div class="grid best-metrics" id="summary" aria-label="Conditions du meilleur créneau et cumul de la journée"></div><div class="sun-strip" id="sunSection"><div class="sun-header"><span class="sun-label">☀️ Soleil direct sur la paroi</span><span class="sun-hour" id="sunDuration">—</span></div><div aria-label="Périodes d’ensoleillement de la paroi" class="sun-bar" id="sunBar"></div><div class="sun-times"><span>00 h</span><span>06 h</span><span>12 h</span><span>18 h</span><span>24 h</span></div><div class="sun-footer"><span class="sun-hour" id="sunIntervals">—</span><span class="sun-cloud" id="sunMode">—</span></div><div class="sun-explain">Jaune = soleil possible sur la paroi, selon la géométrie ou les horaires observés. Les nuages et le relief peuvent masquer le soleil.</div></div><h3 id="hourlyCharts">📈 Prévisions horaires</h3><p class="muted" style="margin:-5px 0 12px;font-size:12px">Courbes synchronisées au toucher / à la souris. La température ressentie est celle calculée par Open-Meteo (vent, humidité, soleil) et ne modifie pas le score d’adhérence.</p><div class="charts" id="charts"></div><div id="hours" style="overflow:auto"></div><p class="muted">Score indicatif calculé localement, non mesuré sur la paroi. Le séchage reste incertain (résurgences, ombre, végétation, ruissellement).</p></section><section><h2>💾 Sauvegarde</h2><div class="row"><button id="export">Exporter mes falaises (.json)</button><label style="flex:1">Importer une sauvegarde JSON<input accept=".json,application/json" id="import" type="file"/></label></div><small>Les favoris sont conservés dans ce navigateur. Effacer les données des sites peut les supprimer : conservez un export JSON.</small></section><small>Cartographie © OpenStreetMap contributors · Open-Meteo · recherche Nominatim. Les recherches publiques peuvent être limitées en fréquence.</small></main>
+<div class="compass-overlay hidden" id="compassDialog" role="dialog" aria-modal="true" aria-labelledby="compassTitle">
+  <div class="compass-panel">
+    <div class="compass-panel-head"><div><strong id="compassTitle">Orientation de la falaise</strong><p>Sélectionne la direction vers laquelle regarde la paroi.</p></div><button type="button" id="closeCompass" aria-label="Fermer">✕</button></div>
+    <div class="compass-wheel" id="compassWheel"><svg id="compassArtwork" viewBox="0 0 360 360" aria-hidden="true"></svg><div id="compassDirections" class="compass-directions"></div><div id="compassChoice" class="compass-choice"></div></div>
+    <p class="compass-foot">16 orientations · pas de 22,5° · 0° = Nord</p>
+  </div>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), store='falaise-meteo-v5', seed={id:'monistrol',name:"Monistrol-d'Allier (exemple)",lat:44.968,lon:3.646,sectors:[{id:'general',name:'Falaise générale',aspect:180,profile:'vertical',rock:'limestone',sunStart:'',sunEnd:''}]};
+let crags=[],current='',sector='',weather=null,selectedDay=0,map=null,marker=null;
+function msg(s,error=false){$('status').textContent=s;$('status').className='status'+(error?' error':'')}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function persist(){try{localStorage.setItem(store,JSON.stringify(crags))}catch(e){msg('Sauvegarde locale impossible : '+e.message,true)}}
+function currentCrag(){return crags.find(x=>x.id===current)}
+function currentSector(){return currentCrag()}
+function uid(){return 'id'+Date.now()+Math.random().toString(36).slice(2,7)}
+function init(){try{const a=JSON.parse(localStorage.getItem(store));crags=Array.isArray(a)&&a.length?a:[structuredClone(seed)]}catch{crags=[structuredClone(seed)]}crags.forEach(c=>{const old=c.sectors?.[0]||{};for(const k of ['aspect','profile','rock','sunStart','sunEnd'])if(c[k]===undefined)c[k]=old[k]??({aspect:180,profile:'vertical',rock:'limestone',sunStart:'',sunEnd:''}[k])});current=crags[0].id;try{$('weatherModel').value=localStorage.getItem('falaise-meteo-model-v9')||'best_match'}catch{$('weatherModel').value='best_match'}renderModelInfo();renderCrags();selectCrag(current);fetchWeather()}
+function renderCrags(){$('crags').innerHTML=crags.map(c=>`<option value="${safe(c.id)}">${safe(c.name)}</option>`).join('');$('crags').value=current}
+function selectCrag(id){current=id;const c=currentCrag();if(!c)return;renderCrags();$('name').value=c.name;$('lat').value=c.lat;$('lon').value=c.lon;for(const k of ['aspect','profile','rock','sunStart','sunEnd'])$(k).value=c[k]??'';syncCompass();updateMap();weather=null;clearWeather()}
+function saveCrag(){const name=$('name').value.trim(),lat=Number($('lat').value),lon=Number($('lon').value),start=$('sunStart').value,end=$('sunEnd').value;if(!name||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180||$('lat').value===''||$('lon').value===''){msg('Nom ou coordonnées invalides.',true);return}if(Boolean(start)!==Boolean(end)){msg('Indiquez début ET fin du soleil, ou laissez les deux vides.',true);return}let c=currentCrag();Object.assign(c,{name,lat,lon,aspect:Number($('aspect').value),profile:$('profile').value,rock:$('rock').value,sunStart:start,sunEnd:end});persist();selectCrag(c.id);msg('Falaise enregistrée.');fetchWeather()}
+function clearWeather(){$('days').innerHTML='';$('summary').innerHTML='';$('charts').innerHTML='';$('hours').innerHTML='';$('sunBar').innerHTML='';$('sunDuration').textContent='—';$('sunIntervals').textContent='—';$('sunMode').textContent='—';$('best').textContent='En attente de prévisions.'}
+async function fetchWeather(){const c=currentCrag();if(!c)return;clearWeather();const chosen=$('weatherModel').value;msg('Chargement Open-Meteo · '+modelLabel(chosen)+'…');const hourly='temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover,weather_code,shortwave_radiation,is_day';const qs=new URLSearchParams({latitude:c.lat,longitude:c.lon,hourly,past_days:'3',forecast_days:chosen==='meteofrance_arome_france_hd'?'2':chosen==='meteofrance_seamless'?'4':'7',timezone:'auto',wind_speed_unit:'kmh',models:chosen});const url='https://api.open-meteo.com/v1/forecast?'+qs.toString();let thisRequest=++weatherRequest;try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);let response;try{response=await fetch(url,{headers:{Accept:'application/json'},signal:controller.signal})}finally{clearTimeout(timeout)}if(!response.ok){const detail=await response.json().catch(()=>({}));throw Error(detail.reason||'HTTP '+response.status)}const json=await response.json();if(json.error||!json.hourly?.time?.length)throw Error(json.reason||'Prévisions vides');if(thisRequest!==weatherRequest||c.id!==current)return;weather=json;selectedDay=0;chartSelection=null;renderWeather();msg('Prévisions chargées')}catch(e){if(thisRequest!==weatherRequest)return;msg('Météo indisponible ('+modelLabel(chosen)+') : '+e.message+'. Vérifiez la connexion ou essayez Best Match.',true)}}
+function solar(lat,lon,date){const rad=Math.PI/180,d=new Date(date),j=(d-Date.UTC(2000,0,1,12))/86400000,n=j,mean=(357.5291+.98560028*n)*rad,lambda=(280.46646+.98564736*n+1.914602*Math.sin(mean)+.019993*Math.sin(2*mean))*rad,ob=(23.439-0.00000036*n)*rad,dec=Math.asin(Math.sin(ob)*Math.sin(lambda)),ra=Math.atan2(Math.cos(ob)*Math.sin(lambda),Math.cos(lambda)),gmst=(280.46061837+360.98564736629*j)*rad,h=((gmst+lon*rad-ra+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI,phi=lat*rad,alt=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(h)),az=(Math.atan2(Math.sin(h),Math.cos(h)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi))*180/Math.PI+180+360)%360;return {alt:alt/rad,az}}
+function sunOnWall(t,s,c,minute=30){return sunAt(t,minute,s,c)}
+function icon(code){if(code===0)return '☀️';if([1,2].includes(code))return '🌤️';if(code===3)return '☁️';if([45,48].includes(code))return '🌫️';if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code))return '🌧️';if([71,73,75,77,85,86].includes(code))return '🌨️';if([95,96,99].includes(code))return '⛈️';return '🌥️'}
+// Calcul maison V13 : chaque ligne du détail provient de cette même fonction.
+const SKIN_PRESETS={
+ dry:{label:'Peau sèche',loT:14,hiT:22,loH:40,hiH:75},
+ normal:{label:'Peau normale',loT:11,hiT:19,loH:33,hiH:65},
+ sweaty:{label:'Peau humide',loT:8,hiT:16,loH:25,hiH:55}
+};
+let skinProfile='normal';
+try{const oldSkin=localStorage.getItem('falaise-meteo-skin-v14');if(SKIN_PRESETS[oldSkin])skinProfile=oldSkin}catch{}
+const SCORE_BASE=75;
+function scoreFactors(x,c,skin=skinProfile){
+ const p=SKIN_PRESETS[skin]||SKIN_PRESETS.normal;
+ const below=Math.max(0,p.loT-x.temp),above=Math.max(0,x.temp-p.hiT);
+ const temperature=Math.max(-38,10-below*2.6-above*(skin==='sweaty'?3.2:2.7));
+ let humidity=6;
+ if(x.hum<p.loH)humidity-=Math.min(20,(p.loH-x.hum)*(skin==='dry'?0.85:0.28));
+ if(x.hum>p.hiH)humidity-=Math.min(32,(x.hum-p.hiH)*(skin==='sweaty'?0.95:0.65));
+ // A modest breeze can dry sweaty skin and rock; powerful gusts remain penalized.
+ let wind=x.wind<=18?Math.min(5,x.wind*.30):Math.max(-28,5-(x.wind-18)*.95);
+ wind-=Math.max(0,x.gust-40)*.65;
+ if(skin==='dry'&&x.hum<40&&x.temp<14)wind-=Math.min(5,(40-x.hum)*.15);
+ if(c.profile==='sheltered_overhang')wind*=.5;
+ wind=Math.max(-30,wind);
+ const wetRock=-Math.min(56,x.recent*4.2+x.past*.85);
+ const rainNow=-Math.min(42,x.rain*20);
+ const night=x.day?0:-48;
+ let sun=0;
+ if(x.sun&&x.radiation>120){
+   sun=x.temp<p.loT+3?5*x.sunFraction:x.temp>p.hiT?(-Math.min(7,(x.temp-p.hiT+1)*1.6))*x.sunFraction:1.5*x.sunFraction;
+ }
+ const profile=(c.profile==='sheltered_overhang'?Math.min(11,x.recent*2+x.rain*4):c.profile==='overhang'?Math.min(7,x.recent*1.5):0);
+ const sandstone=c.rock==='sandstone'&&x.past>.2?-22:0;
+ return [
+  {id:'temperature',label:'🌡️ Température',value:temperature,detail:`${x.temp.toFixed(1)} °C · plage préférée ${p.loT}–${p.hiT} °C (hypothèse personnelle)`},
+  {id:'humidity',label:'💧 Humidité',value:humidity,detail:`${Math.round(x.hum)} % · zone de confort estimée ${p.loH}–${p.hiH} % pour ${p.label.toLowerCase()}`},
+  {id:'wind',label:'💨 Vent / rafales',value:wind,detail:`${Math.round(x.wind)} km/h · rafales ${Math.round(x.gust)} km/h · légère brise favorable, fortes rafales défavorables`},
+  {id:'wetRock',label:'🪨 Pluie passée / séchage',value:wetRock,detail:`${x.recent.toFixed(1)} mm sur 12 h · ${x.past.toFixed(1)} mm sur 48 h (estimation, pas un capteur de rocher)`},
+  {id:'rainNow',label:'🌧️ Pluie pendant l’heure',value:rainNow,detail:`${x.rain.toFixed(1)} mm pendant l’heure`},
+  {id:'night',label:'🌙 Nuit',value:night,detail:x.day?'De jour':'De nuit'},
+  {id:'sun',label:'☀️ Soleil sur la paroi',value:sun,detail:`${Math.round(x.sunFraction*60)} min d’exposition potentielle · ${Math.round(x.radiation)} W/m² · soleil utile à froid, pénalisant par forte chaleur`},
+  {id:'profile',label:'⛰️ Profil / abri',value:profile,detail:c.profile==='sheltered_overhang'?'Dévers abrité (protection estimée)':c.profile==='overhang'?'Dévers':c.profile==='slab'?'Dalle':'Vertical'},
+  {id:'sandstone',label:'⚠️ Grès / fragilité',value:sandstone,detail:c.rock==='sandstone'?'Grès : peut rester fragile après la pluie, vérifier localement':'Pas de pénalité spécifique au grès'}
+ ];
+}
+function scoreForProfile(x,c,skin){
+ const factors=scoreFactors(x,c,skin);
+ return {factors,score:Math.round(Math.max(0,Math.min(100,SCORE_BASE+factors.reduce((sum,v)=>sum+v.value,0))))};
+}
+function calc(){
+ if(!weather)return [];
+ const c=previewCrag(),h=weather.hourly;
+ return h.time.map((t,i)=>{
+  const feltRaw=h.apparent_temperature?.[i];
+  const x={t,temp:Number(h.temperature_2m?.[i]??0),felt:feltRaw==null||!Number.isFinite(Number(feltRaw))?null:Number(feltRaw),hum:Number(h.relative_humidity_2m?.[i]??0),rain:Number(h.precipitation?.[i]||0),wind:Number(h.wind_speed_10m?.[i]||0),gust:Number(h.wind_gusts_10m?.[i]||0),cloud:Number(h.cloud_cover?.[i]||0),radiation:Number(h.shortwave_radiation?.[i]||0),day:h.is_day?.[i]===1,code:h.weather_code?.[i]??3};
+  x.sunFraction=sunFractionInHour(t,c);x.sun=x.sunFraction>0;
+  x.past=(h.precipitation||[]).slice(Math.max(0,i-48),i+1).reduce((a,b)=>a+(Number(b)||0),0);
+  x.recent=(h.precipitation||[]).slice(Math.max(0,i-12),i+1).reduce((a,b)=>a+(Number(b)||0),0);
+  x.profileScores={};
+  for(const sp of Object.keys(SKIN_PRESETS))x.profileScores[sp]=scoreForProfile(x,c,sp).score;
+  const selected=scoreForProfile(x,c,skinProfile);
+  x.factors=selected.factors;
+  x.score=selected.score;
+  return x;
+ });
+}
+function rating(v){return v>=80?'Excellent':v>=65?'Bon':v>=45?'Moyen':'Défavorable'}
+
+function weatherClass(x){return !x.day?'night':x.score>=80?'great':x.score>=65?'good':x.score>=45?'ok':'bad'}
+function hh(h){return String(h).padStart(2,'0')+':00'}
+function scoreExplanation(arr,best){
+ if(!best)return '<p>Aucun créneau de trois heures consécutives de jour dans les données disponibles.</p>';
+ const win=arr.filter(x=>{const hour=Number(x.t.slice(11,13));return hour>=best.startHour&&hour<best.endHour;});
+ if(win.length!==3)return '<p>Données insuffisantes pour expliquer ce créneau.</p>';
+ const average=field=>win.reduce((sum,x)=>sum+x[field],0)/win.length;
+ const factors=win[0].factors.map((factor,j)=>({id:factor.id,label:factor.label,value:win.reduce((total,x)=>total+x.factors[j].value,0)/win.length,details:win.map(x=>x.factors[j].detail)}));
+ const mainPenalty=factors.filter(x=>x.value<-.5).sort((a,b)=>a.value-b.value)[0];
+ const wind=average('wind'),humidity=average('hum'),temp=average('temp');
+ let explanation=`Pour une ${SKIN_PRESETS[skinProfile].label.toLowerCase()}, entre ${hh(best.startHour)} et ${hh(best.endHour)} : ${temp.toFixed(1)} °C, ${Math.round(humidity)} % d’humidité et ${Math.round(wind)} km/h de vent.`;
+ if(mainPenalty)explanation+=' Le facteur qui gêne le plus ce créneau est « '+mainPenalty.label.replace(/^\S+\s/,'')+' ».';
+ else explanation+=' Peu de facteurs défavorables dans cette simulation.';
+ const fmt=v=>(v>0?'+':'')+v.toLocaleString('fr-FR',{maximumFractionDigits:1,minimumFractionDigits:Math.abs(v)%1>.05?1:0})+' pt';
+ const rows=factors.map(f=>{const cl=f.value>.05?'positive':f.value<-.05?'negative':'neutral';return `<div class="score-factor"><div><b>${safe(f.label)}</b><small>${safe(f.details[1]||f.details[0])}${f.details[0]!==f.details[2]?' · variable selon les heures':''}</small></div><strong class="score-delta ${cl}">${safe(fmt(f.value))}</strong></div>`}).join('');
+ const oneHour=win.map(x=>`<tr><td>${safe(x.t.slice(11,16))}</td><td>${x.temp.toFixed(1)} °C</td><td>${Math.round(x.hum)} %</td><td>${x.rain.toFixed(1)} mm</td><td><b>${x.score}/100</b></td></tr>`).join('');
+ const warn=win.some(x=>x.past>.2)&&previewCrag().rock==='sandstone'?'<p class="score-caveat"><b>⚠️ Grès :</b> évitez de grimper tant que le rocher n’est pas parfaitement sec. Certaines falaises en grès sont fragiles pendant plusieurs jours après la pluie.</p>':'';
+ return `<p class="score-intro">${safe(explanation)}</p>
+ <div class="score-method-caption">Influence moyenne des facteurs pendant ces trois heures : base ${SCORE_BASE} points</div>
+ <div class="score-factor-list">${rows}</div>
+ <p class="score-result">Résultat : <strong>${Math.round(best.score)}/100</strong> · scores horaires ${win.map(x=>x.score).join(' · ')}.</p>
+ <div class="score-calculation-note">La note de chaque heure est ${SCORE_BASE} + bonus − malus, plafonnée à 100 et arrondie. Le créneau est la moyenne des trois heures. Les valeurs affichées sont des moyennes et peuvent différer légèrement du total arrondi.</div>
+ <details class="score-formula"><summary>Voir les règles de calcul et les seuils</summary>
+ <ul>
+ <li><b>Peau :</b> profil sélectionné : ${SKIN_PRESETS[skinProfile].label}. Plages de température de confort : sèche 14–22 °C, normale 11–19 °C, humide 8–16 °C. Ce sont des <b>hypothèses personnalisables</b>, pas des seuils cliniques.</li>
+ <li><b>Température :</b> +10 points dans la plage du profil. En dessous : −2,6 points par degré ; au-dessus : −2,7, ou −3,2 pour la peau humide. Minimum −38 points.</li>
+ <li><b>Humidité :</b> +6 points dans la plage (peau sèche 40–75 %, normale 33–65 %, humide 25–55 %). Pénalités progressives hors plage ; seuils heuristiques à ajuster à l’expérience.</li>
+ <li><b>Vent :</b> brise jusqu’à 18 km/h : bonus jusqu’à +5 points. Au-delà : malus croissant, renforcé si les rafales dépassent 40 km/h. Abri du dévers et peau sèche peuvent modifier cet effet.</li>
+ <li><b>Pluie passée :</b> jusqu’à −56 points selon la pluie des dernières 12 h et 48 h (ces périodes se chevauchent). Estimation grossière du séchage, sans mesure du rocher.</li>
+ <li><b>Pluie actuelle :</b> −20 points par mm/h, plafonné à −42 points.</li>
+ <li><b>Soleil :</b> petit bonus si les températures sont fraîches, malus possible en cas de chaleur ; exposition géométrique ou horaires renseignés, pondérée par le rayonnement prévu.</li>
+ <li><b>Dévers abrité :</b> bonus limité lorsque le temps a été pluvieux ; un toit ne protège pas obligatoirement du ruissellement.</li>
+ <li><b>Grès :</b> −22 points après pluie sur 48 h ; avertissement de fragilité, sans garantie de séchage.</li>
+ <li><b>Nuit :</b> −48 points ; les créneaux retenus sont uniquement de jour.</li>
+ </ul>
+ </details>
+ <div class="score-method-caption">Détail heure par heure</div>
+ <div class="score-table-wrap"><table class="score-table"><thead><tr><th>Heure</th><th>Temp.</th><th>Humidité</th><th>Pluie</th><th>Score</th></tr></thead><tbody>${oneHour}</tbody></table></div>
+ ${warn}
+ <div class="score-reference">📖 <b>Pourquoi ces paramètres ?</b> Des études montrent que la friction dépend de la peau et de la texture de la roche ; elles ne définissent pas de température ou d’humidité idéales universelles. <a target="_blank" rel="noopener noreferrer" href="https://pubmed.ncbi.nlm.nih.gov/23259237/">Étude Amca (2012)</a> · <a target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1177/17543371241272903">Étude Clarke (2024)</a> · <a target="_blank" rel="noopener noreferrer" href="https://gripped.com/profiles/understanding-rock-climbing-conditions/">Retour terrain (Gripped)</a>.</div>
+ <p class="score-caveat"><b>Limites :</b> score expérimental de Falaise Météo, non validé scientifiquement. Ni les prises humides, ni les résurgences, ni la température réelle de la roche ni l’exposition effective au vent ne sont directement mesurées.</p>`;
+}
+function renderBestWindow(arr,best,c,aspectLabel,sunMode){
+ const firstHour=6,lastHour=24;
+ const selectedHours=arr.filter(x=>{const h=Number(x.t.slice(11,13));return h>=firstHour&&h<lastHour;});
+ const count=lastHour-firstHour;
+ const start=best?.startHour??null,end=best?.endHour??null;
+ const label=start!==null?hh(start)+' – '+hh(end):'Aucun créneau disponible';
+ const keepWhyOpen=!!document.getElementById('scoreWhy')?.open;
+ const ratingText=best?rating(best.score):'Conditions insuffisantes';
+ // Three 1-hour cells, framed exactly with the same two-pixel gap as the flex track.
+ const outline=best?`<div class="best-outline" style="left:calc(${((start-firstHour)/count*100).toFixed(5)}% - 2px);width:calc(${((end-start)/count*100).toFixed(5)}% + 1px)"></div>`:'';
+ const buttons=Array.from({length:count},(_,k)=>{
+  const hour=firstHour+k,x=selectedHours.find(v=>Number(v.t.slice(11,13))===hour);
+  const cl=x?weatherClass(x):'night';
+  const summary=x?`${hh(hour)} : ${x.score}/100, ${x.temp} °C, humidité ${x.hum} %, pluie ${x.rain} mm, vent ${x.wind} km/h`:`${hh(hour)} : aucune donnée`;
+  return `<button type="button" class="best-hour ${cl}" data-score-hour="${hour}" title="${safe(summary)}" aria-label="${safe(summary)}" ${x?'':'disabled'}></button>`;
+ }).join('');
+ const axisHours=window.innerWidth<=520?[6,12,18,24]:[6,9,12,15,18,21,24];
+ const axis=axisHours.map(h=>`<span style="left:${((h-firstHour)/count*100).toFixed(5)}%;transform:translateX(${h===firstHour?'0':h===lastHour?'-100%':'-50%'})">${hh(h)}</span>`).join('');
+ const profileScores=Object.keys(SKIN_PRESETS).map(sp=>{
+   let score='—';
+   if(best){const win=arr.filter(x=>Number(x.t.slice(11,13))>=start&&Number(x.t.slice(11,13))<end);if(win.length===3)score=Math.round(win.reduce((total,x)=>total+x.profileScores[sp],0)/3)+'/100';}
+   return `<button type="button" class="skin-option ${sp===skinProfile?'active':''}" data-skin="${sp}" aria-pressed="${sp===skinProfile}"><span class="skin-opt-title">${safe(SKIN_PRESETS[sp].label)}</span><span class="skin-opt-score">${score}</span></button>`;
+ }).join('');
+ $('best').innerHTML=`<div class="best-top"><div><div class="best-eyebrow">⭐ Meilleur créneau pour grimper · 3 heures</div><div class="best-big-time">${label}</div></div><div class="best-score">${best?Math.round(best.score)+'/100 · '+ratingText:'Pas de score'}</div></div>
+ <div class="best-description">${safe(c.name)} · orientation ${safe(aspectLabel)} · soleil : ${safe(sunMode)}</div>
+ <div class="best-hour-track"><div class="best-hour-cells">${buttons}${outline}</div><div class="best-axis-clean">${axis}</div></div>
+ <div class="best-legend"><span><i class="best-swatch great"></i>Excellent</span><span><i class="best-swatch good"></i>Bon</span><span><i class="best-swatch ok"></i>Moyen</span><span><i class="best-swatch bad"></i>Défavorable</span><span><i class="best-swatch night"></i>Nuit</span><span><i class="best-swatch best"></i>Meilleur créneau</span></div>
+ <div class="skin-title">🖐️ Type de peau — comparer et sélectionner</div>
+ <div class="skin-options" role="group" aria-label="Profil de peau pour le score">${profileScores}</div>
+ <div class="skin-note">Scores comparés sur ce même créneau. En sélectionnant une peau, le meilleur créneau et tous les graphiques sont recalculés pour ce profil. Les préférences sont conservées sur cet appareil.</div>
+ <div class="best-detail" id="bestHourDetail">Touchez une heure pour voir sa météo et placer le curseur sur les graphiques.</div>
+ <details class="score-why" id="scoreWhy" ${keepWhyOpen?'open':''}>
+ <summary>🔎 Pourquoi ce score ? <span>Explications et points</span></summary>
+ <div class="score-why-body">${scoreExplanation(arr,best)}</div>
+ </details>
+ <div class="activity-note">Score indicatif · les conditions réelles du rocher et les résurgences ne sont pas mesurées.</div>`;
+ $('best').querySelectorAll('[data-skin]').forEach(b=>b.addEventListener('click',()=>{
+   skinProfile=b.dataset.skin;
+   try{localStorage.setItem('falaise-meteo-skin-v14',skinProfile)}catch{}
+   chartSelection=null;
+   renderWeather();
+ }));
+ $('best').querySelectorAll('[data-score-hour]').forEach(b=>{
+  const display=()=>{const hour=Number(b.dataset.scoreHour),x=arr.find(v=>Number(v.t.slice(11,13))===hour);if(!x)return;chartSelection=hour;
+   $('best').querySelectorAll('[data-score-hour]').forEach(e=>e.classList.toggle('selected',e===b));
+   $('bestHourDetail').innerHTML=`<span class="best-clicked">${hh(hour)} · ${x.score}/100</span> &nbsp; ${icon(x.code)} ${x.temp} °C · ressenti ${x.felt===null?'—':x.felt.toFixed(1)+' °C'} · humidité ${x.hum} % · pluie ${x.rain.toFixed(1)} mm · vent ${Math.round(x.wind)} km/h`;
+   drawCharts(arr);
+  };
+  b.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')display()});b.addEventListener('click',display);b.addEventListener('focus',display)
+ });
+}
+function renderWeather(){if(!weather)return;const c=previewCrag(),all=calc();const today=new Date().toLocaleDateString('sv-SE',{timeZone:weather.timezone||'Europe/Paris'});const first=all.find(x=>x.t.slice(0,10)>=today)?.t.slice(0,10)||all[0]?.t.slice(0,10);const dates=[...new Set(all.filter(x=>x.t.slice(0,10)>=first).map(x=>x.t.slice(0,10)))].slice(0,7);if(!dates.length){msg('Aucune journée prévue par ce modèle',true);return}selectedDay=Math.min(selectedDay,dates.length-1);$('days').innerHTML=dates.map((date,i)=>{const items=all.filter(x=>x.t.startsWith(date)&&x.day),best=Math.max(0,...items.map(x=>x.score)),w=items.find(x=>x.score===best)||all.find(x=>x.t.startsWith(date));return `<button class="day ${i===selectedDay?'active':''}" data-day="${i}">${new Date(date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}<br>${icon(w?.code)}<br><b>${best}/100</b><br><small>${rating(best)}</small></button>`}).join('');$('days').querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{selectedDay=Number(b.dataset.day);chartSelection=null;renderWeather()});const date=dates[selectedDay];
+ const arr=all.filter(x=>x.t.startsWith(date));
+ // Une fenêtre est composée de 3 heures consécutives entièrement de jour.
+ let best=null;
+ for(let i=0;i<=arr.length-3;i++){
+   const win=arr.slice(i,i+3);
+   if(win.every(x=>x.day&&Number(x.t.slice(11,13))===Number(win[0].t.slice(11,13))+win.indexOf(x))){
+     const score=win.reduce((a,x)=>a+x.score,0)/3;
+     if(!best||score>best.score)best={score,startHour:Number(win[0].t.slice(11,13)),endHour:Number(win[2].t.slice(11,13))+1};
+   }
+ }
+ const bestHours=best?arr.filter(x=>{
+   const hour=Number(x.t.slice(11,13));
+   return hour>=best.startHour&&hour<best.endHour;
+ }):[];
+ const bestAverage=key=>bestHours.length===3?bestHours.reduce((sum,x)=>sum+x[key],0)/3:null;
+ const mm=arr.reduce((sum,x)=>sum+x.rain,0);
+ const sunMin=arr.reduce((sum,x)=>sum+Math.round(x.sunFraction*60),0);
+ const bestTime=best?hh(best.startHour)+'–'+hh(best.endHour):'Aucun créneau';
+ const cards=[
+   {name:'🌡️ Température moyenne',value:best?bestAverage('temp').toFixed(1).replace('.',',')+' °C':'—',description:'Sur les 3 h du meilleur créneau · '+bestTime},
+   {name:'💧 Humidité moyenne',value:best?Math.round(bestAverage('hum'))+' %':'—',description:'Sur les 3 h du meilleur créneau · '+bestTime},
+   {name:'🌧️ Pluie cumulée',value:mm.toFixed(1).replace('.',',')+' mm',description:'Total des précipitations de la journée (00–24 h)'},
+   {name:'☀️ Soleil sur la paroi',value:formatDuration(sunMin),description:'Durée potentielle sur toute la journée, indépendamment des nuages'}
+ ];
+ $('summary').innerHTML=cards.map(card=>`<div class="metric"><small class="metric-label">${card.name}</small><b>${card.value}</b><small class="metric-caption">${card.description}</small></div>`).join('');
+ const aspectLabel=$('aspect').selectedOptions?.[0]?.textContent||c.aspect+'°';const sunMode=(c.sunStart&&c.sunEnd)?'horaires réels '+c.sunStart+'–'+c.sunEnd:'calcul automatique par orientation';renderBestWindow(arr,best,c,aspectLabel,sunMode);renderSun(arr,c);drawCharts(arr);$('hours').innerHTML='<table style="border-collapse:collapse;width:100%;white-space:nowrap"><thead><tr>'+['Heure','Ciel','Score','°C','Ressentie','Hum.','Pluie','Vent','Soleil'].map(x=>'<th style="padding:8px">'+x+'</th>').join('')+'</tr></thead><tbody>'+arr.map(x=>'<tr>'+[x.t.slice(11,16),icon(x.code),x.score,x.temp+'°',x.felt===null?'—':x.felt.toFixed(1)+'°',x.hum+'%',x.rain+' mm',x.wind+' km/h',x.sunFraction>0?Math.round(x.sunFraction*60)+' min':'—'].map(y=>'<td style="border-top:1px solid #38505d;text-align:center;padding:8px">'+y+'</td>').join('')+'</tr>').join('')+'</tbody></table>'}
+let chartSelection=null;
+const CHART_PALETTE={
+ temp:'#49d9a8',felt:'#ff9376',hum:'#5eb9fa',rain:'#398fe5',
+ wind:'#baa5fc',gust:'#e2adf6',sun:'#f7ca42',cursor:'#f6f3e6'
+};
+function scoreColor(x){
+ if(!x.day)return '#656e72';
+ return x.score>=80?'#3aab86':x.score>=65?'#8bdcaa':x.score>=45?'#ebba5c':'#de4c65';
+}
+function drawCharts(arr){
+ // Échelles communes à toutes les séries d’un même graphique. Le score utilise les couleurs
+ // de la réglette du meilleur créneau ; le curseur horaire est synchronisé partout.
+ const specs=[
+  {title:'Score météo',kind:'score',min:0,max:100,unit:'/100',lines:[{key:'score',label:'Score',color:'score'}]},
+  {title:'Précipitations',kind:'bar',min:0,unit:'mm',lines:[{key:'rain',label:'Pluie horaire',color:CHART_PALETTE.rain}]},
+  {title:'Humidité',kind:'line',min:0,max:100,unit:'%',lines:[{key:'hum',label:'Humidité',color:CHART_PALETTE.hum}]},
+  {title:'Vent',kind:'line',min:0,unit:'km/h',lines:[{key:'wind',label:'Vent',color:CHART_PALETTE.wind}]},
+  {title:'Rafales',kind:'line',min:0,unit:'km/h',lines:[{key:'gust',label:'Rafales',color:CHART_PALETTE.gust}]},
+  {title:'Température',kind:'line',unit:'°C',lines:[{key:'temp',label:'Température',color:CHART_PALETTE.temp},{key:'felt',label:'Ressentie',color:CHART_PALETTE.felt,dashed:true}]},
+  {title:'Rayonnement solaire',kind:'line',min:0,unit:'W/m²',lines:[{key:'radiation',label:'Rayonnement',color:CHART_PALETTE.sun}]}
+ ];
+ const legend=spec=>spec.lines.map(l=>{
+  const cls=l.color==='score'?'score':(spec.kind==='bar'?'bar':(l.dashed?'dashed':''));
+  return `<span class="legend-item"><i class="legend-dot ${cls}" style="--line-color:${l.color==='score'?'#3aab86':l.color}"></i>${l.label}</span>`;
+ }).join('');
+ $('charts').innerHTML=specs.map((spec,i)=>`<div class="chart"><strong>${spec.title}</strong><div class="plot-legend">${legend(spec)}</div><div class="chart-readout" id="readout${i}" aria-live="off">Touchez le graphique pour lire une valeur</div><canvas id="chart${i}" height="160" style="touch-action:pan-y" aria-label="${spec.title} heure par heure"></canvas></div>`).join('');
+ const draw=(spec,i)=>{
+  const cv=$('chart'+i),w=Math.max(210,cv.clientWidth),h=160,dpr=window.devicePixelRatio||1;
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d');if(!ctx)return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const allValues=spec.lines.flatMap(l=>arr.map(x=>x[l.key]).filter(Number.isFinite));
+  const lo=spec.min??Math.floor((allValues.length?Math.min(...allValues):0)-2);
+  const hi=spec.max??Math.max(lo+1,Math.ceil(Math.max(...allValues,0)*1.15));
+  const left=38,right=10,top=11,bottom=28,ww=w-left-right,hh=h-top-bottom;
+  const xp=j=>left+(j+.5)*ww/arr.length,yp=v=>top+hh-(v-lo)/(hi-lo)*hh;
+  ctx.font='11px system-ui';ctx.strokeStyle='#435c6b';ctx.fillStyle='#aec4d0';ctx.lineWidth=1;
+  for(let k=0;k<=4;k++){
+   const y=top+hh*k/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();
+   ctx.fillText(String(Math.round(hi-(hi-lo)*k/4)),2,y+4);
+  }
+  for(const line of spec.lines){
+   const vals=arr.map(x=>x[line.key]);
+   if(spec.kind==='bar'){
+    ctx.fillStyle=line.color;
+    vals.forEach((v,j)=>{if(!Number.isFinite(v))return;const y=yp(v),baseline=yp(Math.max(0,lo));ctx.fillRect(xp(j)-ww/arr.length*.34,y,ww/arr.length*.68,Math.max(0,baseline-y));});
+   }else if(spec.kind==='score'){
+    // Each half hour segment takes the color of its hour category, same as the best-window strip.
+    ctx.lineWidth=2.7;
+    vals.forEach((v,j)=>{
+     if(j===0||!Number.isFinite(v)||!Number.isFinite(vals[j-1]))return;
+     const middle=(xp(j)+xp(j-1))/2,middleY=(yp(v)+yp(vals[j-1]))/2;
+     ctx.strokeStyle=scoreColor(arr[j-1]);ctx.beginPath();ctx.moveTo(xp(j-1),yp(vals[j-1]));ctx.lineTo(middle,middleY);ctx.stroke();
+     ctx.strokeStyle=scoreColor(arr[j]);ctx.beginPath();ctx.moveTo(middle,middleY);ctx.lineTo(xp(j),yp(v));ctx.stroke();
+    });
+   }else{
+    ctx.strokeStyle=line.color;ctx.lineWidth=2.5;ctx.setLineDash(line.dashed?[5,4]:[]);
+    ctx.beginPath();let started=false;
+    vals.forEach((v,j)=>{if(!Number.isFinite(v)){started=false;return;}if(!started){ctx.moveTo(xp(j),yp(v));started=true;}else ctx.lineTo(xp(j),yp(v));});
+    ctx.stroke();ctx.setLineDash([]);
+   }
+  }
+  ctx.fillStyle='#aec4d0';for(let k=0;k<arr.length;k+=3)ctx.fillText(arr[k].t.slice(11,13)+'h',xp(k)-8,h-6);
+  if(chartSelection!==null){
+   const j=Math.max(0,Math.min(arr.length-1,chartSelection));
+   ctx.strokeStyle=CHART_PALETTE.cursor;ctx.lineWidth=1.3;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(xp(j),top);ctx.lineTo(xp(j),top+hh);ctx.stroke();ctx.setLineDash([]);
+   for(const line of spec.lines){const v=arr[j][line.key];if(!Number.isFinite(v))continue;
+    ctx.fillStyle=line.color==='score'?scoreColor(arr[j]):line.color;
+    ctx.strokeStyle='#142330';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(xp(j),yp(v),4,0,Math.PI*2);ctx.fill();ctx.stroke();
+   }
+  }
+  const j=chartSelection===null?null:Math.max(0,Math.min(arr.length-1,chartSelection));
+  $('readout'+i).innerHTML=j===null?'Touchez le graphique pour lire une valeur':
+   `<span class="reading">${arr[j].t.slice(11,16)}</span> · `+spec.lines.map(l=>{
+    const v=arr[j][l.key],value=Number.isFinite(v)?Number(v).toLocaleString('fr-FR',{maximumFractionDigits:1})+' '+spec.unit:'indisponible';
+    const c=l.color==='score'?scoreColor(arr[j]):l.color;
+    return `<span class="reading" style="color:${c}">${l.label} : ${value}</span>`;
+   }).join(' · ');
+  const pick=e=>{
+   const rect=cv.getBoundingClientRect(),x=(e.clientX-rect.left)*w/rect.width;
+   const next=Math.max(0,Math.min(arr.length-1,Math.round((x-left)/ww*arr.length-.5)));
+   if(chartSelection===next)return;
+   chartSelection=next;specs.forEach(draw);
+  };
+  cv.onpointermove=e=>{if(e.pointerType==='mouse'||e.buttons)pick(e)};
+  cv.onpointerdown=pick;
+ };
+ if(chartSelection!==null&&chartSelection>=arr.length)chartSelection=null;
+ specs.forEach(draw);
+}
+
+const modelInfo={best_match:'Best Match : AROME France HD proche échéance puis ARPEGE / modèles globaux pour 7 jours.',meteofrance_seamless:'Météo-France : AROME et ARPEGE · jusqu’à 4 jours.',ecmwf_ifs:'ECMWF IFS : prévisions globales · 7 jours.',icon_seamless:'ICON : prévisions DWD · jusqu’à 7 jours.',meteofrance_arome_france_hd:'AROME France HD : maille ~1,5 km · environ 48 h uniquement.'};
+let weatherRequest=0;
+function modelLabel(v){return $('weatherModel').selectedOptions?.[0]?.textContent||v}
+function renderModelInfo(){$('modelHelp').textContent=modelInfo[$('weatherModel').value]||''}
+function previewCrag(){const c=currentCrag();if(!c)return{};const aspect=$('aspect').value,profile=$('profile').value,rock=$('rock').value;return {...c,aspect:aspect===''?Number(c.aspect||180):Number(aspect),profile:profile||c.profile||'vertical',rock:rock||c.rock||'limestone',sunStart:$('sunStart').value,sunEnd:$('sunEnd').value}}
+function formatDuration(minutes){const m=Math.max(0,Math.round(minutes));return Math.floor(m/60)+' h '+String(m%60).padStart(2,'0')}
+function minuteOfDay(t, offset){return (Number(t.slice(11,13))*60+Number(t.slice(14,16))+offset)%1440}
+function sunAt(t,offset,c,geoOnly=false){const utc=Date.parse(t+'Z')-(Number(weather?.utc_offset_seconds)||0)*1000+offset*60000;const pos=solar(c.lat,c.lon,new Date(utc));if(pos.alt<=1)return false;if(!geoOnly&&c.sunStart&&c.sunEnd){const clock=minuteOfDay(t,offset),start=clockMinutes(c.sunStart),end=clockMinutes(c.sunEnd);if(start===end)return false;return start<end?clock>=start&&clock<end:clock>=start||clock<end}
+ const delta=(((pos.az-Number(c.aspect)+540)%360)+360)%360-180;
+ const tilt=c.profile==='slab'?20:(c.profile==='overhang'||c.profile==='sheltered_overhang')?-25:0;
+ const r=Math.PI/180;
+ const illumination=Math.cos(pos.alt*r)*Math.cos(delta*r)*Math.cos(tilt*r)+Math.sin(pos.alt*r)*Math.sin(tilt*r);
+ return illumination>0.02}
+function clockMinutes(t){return Number(t.slice(0,2))*60+Number(t.slice(3,5))}
+function sunFractionInHour(t,c){let hit=0;for(let i=0;i<12;i++)if(sunAt(t,i*5+2.5,c))hit++;return hit/12}
+function renderSun(arr,c){const bar=$('sunBar');bar.innerHTML='';if(!arr.length)return;
+ const grid=[];const date=arr[0].t.slice(0,10);const template=date+'T00:00';let total=0;let segments=[];let start=-1;
+ for(let i=0;i<288;i++){const v=sunAt(template,i*5+2.5,c);grid.push(v);if(v){total+=5;if(start<0)start=i}else if(start>=0){segments.push([start,i]);start=-1}}
+ if(start>=0)segments.push([start,288]);
+ for(const [a,b] of segments){const d=document.createElement('div');d.className='sun-unit';d.style.left=(a/288*100)+'%';d.style.width=((b-a)/288*100)+'%';bar.appendChild(d)}
+ for(let hour=6;hour<24;hour+=6){const tick=document.createElement('span');tick.className='sun-tick';tick.style.left=(hour/24*100)+'%';bar.appendChild(tick)}
+ $('sunDuration').textContent=formatDuration(total);
+ const asClock=n=>String(Math.floor(n/12)).padStart(2,'0')+':'+String(n%12*5).padStart(2,'0');
+ $('sunIntervals').textContent=segments.length?segments.map(([a,b])=>asClock(a)+'–'+asClock(b)).join(' · '):'Aucune exposition directe calculée';
+ $('sunMode').textContent=c.sunStart&&c.sunEnd?'Horaires réels renseignés (prioritaires)':'Estimation par orientation '+($('aspect').selectedOptions?.[0]?.textContent||((Number(c.aspect)||0)+'°'));
+ bar.onclick=e=>{const r=bar.getBoundingClientRect();const hh=Math.min(23,Math.max(0,Math.floor(24*(e.clientX-r.left)/r.width)));chartSelection=hh;drawCharts(arr)};
+}
+
+// V12 : OpenTopoMap-R uniquement, via le fournisseur autorisé openmaps.fr.
+// Les tuiles sont gratuites pour un usage non commercial modéré mais exigent un Referer HTTP valide.
+let nativeMap=null,mapMarker=null,mapFailureTimer=null;
+const opentopoRasterStyle={version:8,sources:{topo:{type:'raster',tiles:['https://tile.openmaps.fr/opentopomap/{z}/{x}/{y}.png'],tileSize:256,maxzoom:17,attribution:'<a href="https://github.com/sletuffe/OpenTopoMap" target="_blank">© OpenTopoMap-R</a> · <a href="https://openmaps.fr/donate" target="_blank">❤️ Don</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>'}},layers:[{id:'opentopo',type:'raster',source:'topo'}]};
+function addCss(url){if(document.querySelector('link[href="'+url+'"]'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=url;document.head.append(l)}
+function loadScript(url,globalName){if(window[globalName])return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=url;s.async=true;s.onload=()=>window[globalName]?resolve():reject(new Error('Bibliothèque cartographique indisponible'));s.onerror=()=>reject(new Error('Chargement externe refusé'));document.head.append(s)})}
+async function loadLibrary(){addCss('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css');try{await loadScript('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js','maplibregl')}catch(e){await loadScript('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js','maplibregl')}return window.maplibregl}
+function setMapLink(lat,lon,zoom=14){$('mapOsmLink').href='https://www.openstreetmap.org/?mlat='+lat+'&mlon='+lon+'#map='+Math.round(zoom)+'/'+lat+'/'+lon;
+ $('mapTopoLink').href='https://opentopomap.org/#map='+Math.round(zoom)+'/'+lat+'/'+lon;}
+function updateMap(){const c=currentCrag();if(!c)return;const lat=Number(c.lat),lon=Number(c.lon);if(nativeMap?.jumpTo)nativeMap.jumpTo({center:[lon,lat]});if(mapMarker)mapMarker.setLngLat([lon,lat]);setMapLink(lat,lon,nativeMap?.getZoom?.()||14)}
+function point(p){const lat=Number(p.lat),lon=Number(p.lng??p.lon);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
+ $('lat').value=lat.toFixed(6);$('lon').value=lon.toFixed(6);if(mapMarker)mapMarker.setLngLat([lon,lat]);
+ setMapLink(lat,lon,nativeMap?.getZoom?.()||14);$('mapMsg').textContent='📍 Falaise placée : '+lat.toFixed(6)+', '+lon.toFixed(6)+' · Cliquez sur « Enregistrer la falaise ».'}
+function releaseMap(){if(mapFailureTimer){clearTimeout(mapFailureTimer);mapFailureTimer=null}if(nativeMap){try{nativeMap.remove()}catch(e){}}nativeMap=null;mapMarker=null}
+async function createMap(){const c=currentCrag();if(!c)return;releaseMap();const el=$('map');
+ const lat=Number($('lat').value),lon=Number($('lon').value);setMapLink(lat,lon,13.6);
+ if(location.protocol==='file:'){
+   el.innerHTML='<div class="map-local-warning"><strong>🗺️ Carte topographique gratuite</strong><div>Le serveur openmaps.fr impose un en-tête <b>Referer</b> identifiant le site. Un fichier HTML ouvert directement depuis Téléchargements ne fournit pas cette information. Pour éviter le panneau « Access denied », ouvre l’application via GitHub Pages (HTTPS).</div><a id="externalTopoInMap" target="_blank" rel="noopener noreferrer">Ouvrir la carte topo dans un nouvel onglet</a></div>';
+   $('externalTopoInMap').href=$('mapTopoLink').href;
+   $('mapMsg').textContent='Mode fichier local : carte intégrée désactivée afin de respecter les conditions de son fournisseur. Sur GitHub Pages, tu pourras placer et déplacer le repère.';
+   return;
+ }
+ el.innerHTML='<div class="map-loading">🗺️ Chargement d’OpenTopoMap…</div>';$('mapMsg').textContent='Connexion au fond OpenTopoMap-R…';
+ try{
+  const lib=await loadLibrary();if($('mapArea').classList.contains('hidden'))return;
+  el.textContent='';
+  const inst=new lib.Map({container:el,style:opentopoRasterStyle,center:[lon,lat],zoom:13.6,maxZoom:19,pitch:0,attributionControl:true,
+   transformRequest:(url)=>({url,referrerPolicy:'strict-origin-when-cross-origin'})});
+  nativeMap=inst;
+  inst.addControl(new lib.NavigationControl({showCompass:false}),'top-right');
+  mapMarker=new lib.Marker({color:'#ef6a5e',draggable:true}).setLngLat([lon,lat]).addTo(inst);
+  mapMarker.on('dragend',()=>{const p=mapMarker.getLngLat();point({lat:p.lat,lon:p.lng})});
+  inst.on('click',e=>point({lat:e.lngLat.lat,lon:e.lngLat.lng}));
+  let loaded=false,denied=false;
+  inst.on('load',()=>{loaded=true;if(mapFailureTimer){clearTimeout(mapFailureTimer);mapFailureTimer=null}
+   if(!denied)$('mapMsg').textContent='OpenTopoMap-R · Touchez la carte pour placer la falaise ; déplacez le repère pour affiner.';inst.resize()});
+  inst.on('error',e=>{const txt=String(e?.error?.message||'ressource indisponible');if(/403|401|access denied|forbidden|referr/i.test(txt)){
+    denied=true;$('mapMsg').textContent='Le fournisseur refuse les tuiles (identification du site). Vérifie que cette page est ouverte depuis une adresse HTTPS GitHub Pages et non depuis un fichier local ; si le refus continue, le serveur peut limiter ton site.';
+   }else if(!loaded){$('mapMsg').textContent='La carte ne se charge pas : '+txt.slice(0,160)}});
+  mapFailureTimer=setTimeout(()=>{if(!loaded&&nativeMap===inst){$('mapMsg').textContent='Carte indisponible ou connexion trop lente. Vérifie que le site est bien hébergé en HTTPS et consulte le lien de carte topo externe.'}},14000);
+ }catch(e){el.innerHTML='<div class="map-loading">⚠️ Bibliothèque cartographique indisponible.</div>';$('mapMsg').textContent='Impossible de charger la carte : '+e.message;}
+}
+async function openMap(){$('mapArea').classList.toggle('hidden');if($('mapArea').classList.contains('hidden')){releaseMap();$('map').innerHTML='';return}createMap()}
+$('mapCenter').onclick=()=>{const lat=Number($('lat').value),lon=Number($('lon').value);if(nativeMap&&Number.isFinite(lat)&&Number.isFinite(lon))nativeMap.flyTo({center:[lon,lat],zoom:14})};
+
+$('weatherModel').onchange=()=>{try{localStorage.setItem('falaise-meteo-model-v9',$('weatherModel').value)}catch{}renderModelInfo();fetchWeather()};
+for(const name of ['aspect','profile','rock','sunStart','sunEnd'])$(name).addEventListener('change',()=>{if(weather){chartSelection=null;renderWeather()}msg('Aperçu mis à jour. Enregistrez la falaise pour conserver les réglages.')});
+
+async function searchPlaces(){const q=$('search').value.trim();if(q.length<3){msg('Saisissez au moins 3 caractères.',true);return}msg('Recherche des lieux…');$('results').textContent='Recherche en cours…';try{const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=8&q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.json();$('results').innerHTML=data.length?data.map((p,i)=>`<button class="searchresult" data-place="${i}">${safe(p.display_name)}</button>`).join(''):'Aucun lieu trouvé : utilisez la carte pour placer le point.';$('results').querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{const p=data[Number(b.dataset.place)];$('name').value=p.name||q;$('lat').value=p.lat;$('lon').value=p.lon;$('results').innerHTML='';point({lat:Number(p.lat),lng:Number(p.lon)});msg('Lieu trouvé. Enregistrez la falaise pour conserver ses coordonnées.')});msg(data.length+' résultat(s) trouvé(s).')}catch(e){$('results').textContent='Recherche indisponible. Utilisez la carte ou les coordonnées GPS.';msg('Recherche impossible : '+e.message,true)}}
+$('crags').onchange=e=>{selectCrag(e.target.value);fetchWeather()};
+$('newCrag').onclick=()=>{const c={id:uid(),name:'Nouvelle falaise',lat:44.968,lon:3.646,aspect:180,profile:'vertical',rock:'limestone',sunStart:'',sunEnd:''};crags.push(c);persist();selectCrag(c.id);$('cragSettings').open=true;$('cragParamSection').scrollIntoView({behavior:'smooth',block:'start'});msg('Nouvelle falaise créée : ajustez ses paramètres, puis enregistrez.')};
+$('removeCrag').onclick=()=>{if(crags.length===1)return msg('Conservez au moins une falaise.',true);if(!confirm('Supprimer cette falaise ?'))return;crags=crags.filter(x=>x.id!==current);current=crags[0].id;persist();selectCrag(current);fetchWeather()};
+$('saveCrag').onclick=saveCrag;$('refresh').onclick=fetchWeather;$('mapToggle').onclick=openMap;$('searchBtn').onclick=searchPlaces;$('search').onkeydown=e=>{if(e.key==='Enter')searchPlaces()};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:14,crags},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='falaises-sauvegarde.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('import').onchange=async e=>{try{const data=JSON.parse(await e.target.files[0].text());if(!Array.isArray(data.crags)||!data.crags.length||!data.crags.every(c=>typeof c.name==='string'&&Number.isFinite(Number(c.lat))&&Number.isFinite(Number(c.lon))))throw Error('Format invalide');crags=data.crags;crags.forEach(c=>{const old=c.sectors?.[0]||{};for(const k of ['aspect','profile','rock','sunStart','sunEnd'])if(c[k]===undefined)c[k]=old[k]??({aspect:180,profile:'vertical',rock:'limestone',sunStart:'',sunEnd:''}[k])});current=crags[0].id;persist();selectCrag(current);fetchWeather();msg('Sauvegarde importée.')}catch(err){msg('Import impossible : '+err.message,true)}e.target.value=''};
+const compassDefs=[['N','Nord'],['NNE','Nord-Nord-Est'],['NE','Nord-Est'],['ENE','Est-Nord-Est'],['E','Est'],['ESE','Est-Sud-Est'],['SE','Sud-Est'],['SSE','Sud-Sud-Est'],['S','Sud'],['SSO','Sud-Sud-Ouest'],['SO','Sud-Ouest'],['OSO','Ouest-Sud-Ouest'],['O','Ouest'],['ONO','Ouest-Nord-Ouest'],['NO','Nord-Ouest'],['NNO','Nord-Nord-Ouest']];
+function compassIndex(deg){return (Math.round((Number(deg)||0)/22.5)%16+16)%16}
+function compassDraw(){const root=$('compassArtwork'),list=$('compassDirections');root.innerHTML='';list.innerHTML='';const ns='http://www.w3.org/2000/svg', selected=compassIndex($('aspect').value);
+ const circle=document.createElementNS(ns,'circle');circle.setAttribute('cx','180');circle.setAttribute('cy','180');circle.setAttribute('r','143');circle.setAttribute('fill','#223644');circle.setAttribute('stroke','#577587');circle.setAttribute('stroke-width','2');root.appendChild(circle);
+ for(let i=0;i<16;i++){const angle=i*Math.PI/8, cardinal=i%4===0, inter=i%2===0, inner=cardinal?12:10,outer=cardinal?132:inter?100:75,half=cardinal?0.145:inter?0.12:0.09;
+  const pt=(r,a)=>[180+r*Math.sin(a),180-r*Math.cos(a)];const coords=[pt(inner,angle-half),pt(outer,angle),pt(inner,angle+half)];const poly=document.createElementNS(ns,'polygon');poly.setAttribute('points',coords.map(x=>x.join(',')).join(' '));poly.setAttribute('fill',i===selected?'#f5c95f':i%2===0?'#d7e2dd':'#67808e');poly.setAttribute('stroke','#18313f');poly.setAttribute('stroke-width','1.4');root.appendChild(poly);
+  const side=document.createElementNS(ns,'polygon');side.setAttribute('points',[pt(inner,angle+half),pt(outer,angle),pt(0,0)].map(x=>x.join(',')).join(' '));side.setAttribute('fill',i===selected?'#bd8e30':i%2===0?'#829998':'#344f5d');side.setAttribute('stroke','#1d3543');side.setAttribute('stroke-width','.65');root.appendChild(side);
+  const b=document.createElement('button');b.type='button';b.className='compass-dir'+(cardinal?' cardinal':'')+(i===selected?' active':'');b.textContent=compassDefs[i][0];b.title=compassDefs[i][1]+' · '+(i*22.5)+'°';b.setAttribute('aria-label',b.title);b.setAttribute('aria-pressed',String(i===selected));b.style.left=(50+43*Math.sin(angle))+'%';b.style.top=(50-43*Math.cos(angle))+'%';b.addEventListener('click',()=>chooseCompass(i));list.appendChild(b);
+ }
+ $('compassChoice').innerHTML='<b>'+compassDefs[selected][0]+'</b><span>'+compassDefs[selected][1]+'</span><small>'+Number($('aspect').value).toLocaleString('fr-FR')+'°</small>';
+}
+function syncCompass(){const i=compassIndex($('aspect').value);$('compassButton').textContent='🧭 '+compassDefs[i][0]+' · '+compassDefs[i][1];if(!$('compassDialog').classList.contains('hidden'))compassDraw()}
+function chooseCompass(index){$('aspect').value=String(index*22.5);$('aspect').dispatchEvent(new Event('change',{bubbles:true}));syncCompass();closeCompass()}
+function closeCompass(){$('compassDialog').classList.add('hidden');$('compassButton').focus()}
+$('compassButton').addEventListener('click',()=>{$('compassDialog').classList.remove('hidden');compassDraw()});
+$('closeCompass').addEventListener('click',closeCompass);
+$('compassDialog').addEventListener('pointerdown',e=>{if(e.target===$('compassDialog'))closeCompass()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('compassDialog').classList.contains('hidden'))closeCompass()});
+
+// Interface mobile : les paramètres restent accessibles sans repousser les prévisions sous l'écran.
+const settingsDisclosure=$('cragSettings');
+const mobileQuery=window.matchMedia('(max-width: 700px)');
+function adaptSettings(){
+ if(!settingsDisclosure)return;
+ if(!settingsDisclosure.dataset.userToggled)settingsDisclosure.open=!mobileQuery.matches;
+}
+adaptSettings();
+mobileQuery.addEventListener?.('change',adaptSettings);
+settingsDisclosure?.addEventListener('toggle',()=>{if(settingsDisclosure.dataset.ready==='1')settingsDisclosure.dataset.userToggled='true'});
+settingsDisclosure.dataset.ready='1';
+$('openSettingsMobile').onclick=()=>{settingsDisclosure.open=true;settingsDisclosure.dataset.userToggled='true';$('cragParamSection').scrollIntoView({behavior:'smooth',block:'start'});};
+init();
+</script></body></html>
